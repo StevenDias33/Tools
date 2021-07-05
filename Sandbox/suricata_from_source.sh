@@ -44,7 +44,9 @@ libyaml-0-2 libyaml-dev zlib1g zlib1g-dev libcap-ng-dev libcap-ng0 \
 make libmagic-dev libjansson-dev libjansson4 pkg-config liblz4-dev \
 python python3-pip libgeoip-dev
 # install rust, cargo
-curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs >> rust.sh
+chmod +x rust.sh
+./rust.sh -y
 source "$HOME"/.cargo/env
 cargo install cargo-vendor
 sudo apt -y install libnetfilter-queue-dev libnetfilter-queue1 libnfnetlink-dev libnfnetlink0

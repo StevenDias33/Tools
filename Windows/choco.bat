@@ -7,6 +7,7 @@ rem WMF 5.1 https://www.microsoft.com/en-us/download/details.aspx?id=54616
 
 powershell -Command "Set-ExecutionPolicy Bypass -Scope Process -Force; iwr https://community.chocolatey.org/install.ps1 -UseBasicParsing | iex"
 choco upgrade chocolatey
+chocolatey feature enable -n=allowGlobalConfirmation 
 choco install -y dotnetfx dotnet4.7.2 vcredist-all wixtoolset msxml4.sp3 msxml6.sp1
 
 pip3 install pillow pywintrace

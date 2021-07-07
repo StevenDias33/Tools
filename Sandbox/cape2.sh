@@ -10,7 +10,7 @@
 
 # Static values
 # Where to place everything
-NETWORK_IFACE=eth0
+NETWORK_IFACE=virbr1
 # for tor
 IFACE_IP="192.168.122.1"
 # DB password

@@ -10,11 +10,11 @@
 
 # Static values
 # Where to place everything
-NETWORK_IFACE=virbr1
+NETWORK_IFACE=eth0
 # for tor
-IFACE_IP="192.168.1.1"
+IFACE_IP="192.168.122.1"
 # DB password
-PASSWD="SuperPuperSecret"
+PASSWD="analyste"
 DIST_MASTER_IP=X.X.X.X
 USER="cape"
 nginx_version=1.19.6

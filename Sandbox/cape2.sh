@@ -184,7 +184,7 @@ function install_nginx() {
         wget http://nginx.org/download/nginx-$nginx_version.tar.gz
         wget http://nginx.org/download/nginx-$nginx_version.tar.gz.asc
         gpg --verify "nginx-$nginx_version.tar.gz.asc"
-        tar zvf nginx-$nginx_version.tar.gz
+        tar xzvf nginx-$nginx_version.tar.gz
     fi
 
     # PCRE version 8.42
@@ -531,6 +531,8 @@ function install_suricata() {
     # enable eve-log
     python3 -c "pa = '/etc/suricata/suricata.yaml';q=open(pa, 'rb').read().replace(b'eve-log:\n      enabled: no\n', b'eve-log:\n      enabled: yes\n');open(pa, 'wb').write(q);"
     python3 -c "pa = '/etc/suricata/suricata.yaml';q=open(pa, 'rb').read().replace(b'unix-command:\n  enabled: auto\n  #filename: custom.socket', b'unix-command:\n  enabled: yes\n  filename: /tmp/suricata-command.socket');open(pa, 'wb').write(q);"
+    # file-store
+    python3 -c "pa = '/etc/suricata/suricata.yaml';q=open(pa, 'rb').read().replace(b'file-store:\n  version: 2\n  enabled: no', b'file-store:\n  version: 2\n  enabled: yes');open(pa, 'wb').write(q);"
 
     chown ${USER}:${USER} -R /etc/suricata
 }
@@ -569,8 +571,8 @@ function install_mongo(){
     echo "[+] Installing MongoDB"
 
     # $(lsb_release -cs) on 20.04 they uses 18.04 repo
-    wget -qO - https://www.mongodb.org/static/pgp/server-4.4.asc | sudo apt-key add -
-    echo "deb [ arch=amd64 ] https://repo.mongodb.org/apt/ubuntu bionic/mongodb-org/4.4 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb.list
+    wget -qO - https://www.mongodb.org/static/pgp/server-5.0.asc | sudo apt-key add -
+    echo "deb [ arch=amd64 ] https://repo.mongodb.org/apt/ubuntu $(lsb_release -cs)/mongodb-org/5.0 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb.list
 
     apt update 2>/dev/null
     apt install libpcre3-dev -y
@@ -616,6 +618,7 @@ Group=mongodb
 StandardOutput=syslog
 StandardError=syslog
 SyslogIdentifier=mongodb
+LimitNOFILE=65536
 [Install]
 WantedBy=multi-user.target
 EOF
@@ -905,6 +908,7 @@ EOF
     chmod 644 /usr/share/clamav-unofficial-sigs/conf.d/00-clamav-unofficial-sigs.conf
     usermod -a -G ${USER} clamav
     echo "/opt/CAPEv2/storage/** r," | sudo tee -a /etc/apparmor.d/local/usr.sbin.clamd
+    sudo apparmor_parser -r /etc/apparmor.d/usr.sbin.clamd
     sudo systemctl enable clamav-daemon
     sudo systemctl start clamav-daemon
     sudo -u clamav /usr/sbin/clamav-unofficial-sigs
